@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Gumroad\GumroadService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->when(GumroadService::class)
+            ->needs('$accessToken')
+            ->give(config('services.gumroad.access_token'));
     }
 }
