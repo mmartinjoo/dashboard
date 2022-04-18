@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Setting;
 use App\Services\Gumroad\GumroadService;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,7 +27,5 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GumroadService::class)
             ->needs('$accessToken')
             ->give(config('services.gumroad.access_token'));
-
-        $this->app->singleton(Setting::class, fn () => Setting::first());
     }
 }

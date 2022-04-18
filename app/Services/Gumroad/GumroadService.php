@@ -2,17 +2,16 @@
 
 namespace App\Services\Gumroad;
 
-use App\Models\Setting;
+use App\Models\Product;
 use App\Services\Gumroad\DataTransferObjects\SaleData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class GumroadService
 {
-    public function __construct(
-        private readonly string $accessToken,
-        private readonly Setting $setting,
-    ) {}
+    public function __construct(private readonly string $accessToken)
+    {
+    }
 
     /**
      * @return Collection<SaleData>
@@ -21,14 +20,14 @@ class GumroadService
     {
         $sales = [];
 
-        foreach ($this->setting->gumroad_product_ids as $productId) {
+        foreach (Product::all() as $product) {
             $data = Http::get('https://api.gumroad.com/v2/sales', [
                 'access_token' => $this->accessToken,
-                'product_id' => $productId,
+                'product_id' => $product->gumroad_id,
             ])->json('sales');
 
             $dtos = collect($data)
-                ->map(fn (array $sale) => SaleData::fromArray($sale));
+                ->map(fn (array $sale) => SaleData::make($sale, $product));
 
             $sales = [
                 ...$sales,
