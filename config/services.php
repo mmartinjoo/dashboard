@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'gumroad' => [
+        'access_token' => env('GUMROAD_ACCESS_TOKEN'),
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
