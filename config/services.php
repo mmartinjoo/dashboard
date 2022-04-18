@@ -16,6 +16,8 @@ return [
 
     'gumroad' => [
         'access_token' => env('GUMROAD_ACCESS_TOKEN'),
+        'product_ids' => env('GUMROAD_PRODUCT_IDS'),
+        'product_titles' => env('GUMROAD_PRODUCT_TITLES'),
     ],
 
     'mailgun' => [
