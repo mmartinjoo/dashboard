@@ -57,22 +57,26 @@
                     </div>
                 </div>
                 <div class="flex justify-around text-white py-8">
-                    @for ($i = 0; $i < 3; $i++)
+                    @foreach ($model['product_summaries'] as $summary)
                     <div class="rounded-2xl bg-white text-black border border-zinc-300 drop-shadow-lg px-4 py-6 w-1/4">
                         <div class="flex justify-between mb-6">
-                            <span class="uppercase">Basic</span>
-                            <span class="text-5xl font-bold">12%</span>
+                            <span class="uppercase">{{ $summary->product->title }}</span>
+                            <span class="text-5xl font-bold">
+                                {{ number_format($summary->total_revenue_contribution * 100, 0) }}%
+                            </span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-left text-2xl">$2,088</span>
+                            <span class="text-left text-2xl">
+                                ${{ number_format($summary->total_revenue, 0, ',') }}
+                            </span>
                             <span class="uppercase text-right text-gray-400 text-md">Total Revenue</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-left text-2xl">75</span>
+                            <span class="text-left text-2xl">{{ $summary->units_sold }}</span>
                             <span class="uppercase text-right text-gray-400 text-md">Units Sold</span>
                         </div>
                     </div>
-                    @endfor
+                    @endforeach
                 </div>
                 <table class="table-fixed min-w-full drop-shadow-lg">
                     <thead>
