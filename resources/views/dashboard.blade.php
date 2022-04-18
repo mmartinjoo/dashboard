@@ -85,27 +85,43 @@
                             <th class="font-normal bg-zinc-100 uppercase py-2">Date</th>
                             <th class="font-normal bg-zinc-100 uppercase py-2">Package</th>
                             <th class="font-normal bg-zinc-100 uppercase py-2">Amount</th>
-                            <th class="font-normal bg-zinc-100 uppercase py-2">Discount Code</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @for ($i = 0; $i < 5; $i++)
+                        @foreach ($model['sales'] as $sale)
                         <tr @class([
-                            'bg-white' => $i % 2 === 0,
-                            'bg-zinc-100' => $i % 2 !== 0,
+                            'bg-white' => $loop->odd,
+                            'bg-zinc-100' => $loop->even,
                         ])>
                             <td class="py-4 pl-6 text-left">
-                                <span>john@example.net</span>
-                                <span class="block text-black opacity-50">John Doe</span>
+                                <span>{{ $sale->email }}</span>
+                                <span class="block text-black opacity-50">{{ $sale->full_name }}</span>
                             </td>
-                            <td class="py-4 text-center">Apr. 16, 2022</td>
+                            <td class="py-4 text-center">{{ $sale->date->format('M. d, Y') }}</td>
                             <td class="py-4 text-center">
-                                <span class="inline-flex items-center justify-center px-3 py-1.5 mr-2 text-sm leading-none text-lime-900 bg-lime-200 rounded-full">Premium</span>
+                                <span @class([
+                                    'inline-flex' => true,
+                                    'items-center' => true,
+                                    'justify-center' => true,
+                                    'px-3' => true,
+                                    'py-1.5' => true,
+                                    'mr-2' => true,
+                                    'text-sm' => true,
+                                    'leading-none' => true,
+                                    'rounded-full' => true,
+                                    'text-lime-900' => $sale->product->title === 'Premium',
+                                    'bg-lime-200' => $sale->product->title === 'Premium',
+                                    'text-yellow-900' => $sale->product->title === 'Plus',
+                                    'bg-yellow-200' => $sale->product->title === 'Plus',
+                                    'text-gray-900' => $sale->product->title === 'Basic',
+                                    'bg-gray-200' => $sale->product->title === 'Basic',
+                                ]) class="">
+                                    {{ $sale->product->title }}
+                                </span>
                             </td>
-                            <td class="py-4 text-center">$99</td>
-                            <td class="py-4 text-center"></td>
+                            <td class="py-4 text-center">${{ $sale->price }}</td>
                         </tr>
-                        @endfor
+                        @endforeach
                     </tbody>
                 </table>
             </div>

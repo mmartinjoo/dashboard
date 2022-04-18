@@ -21,12 +21,26 @@ class GumroadService
         $sales = [];
 
         foreach (Product::all() as $product) {
-            $data = Http::get('https://api.gumroad.com/v2/sales', [
-                'access_token' => $this->accessToken,
-                'product_id' => $product->gumroad_id,
-            ])->json('sales');
+            $salesByProduct = [];
 
-            $dtos = collect($data)
+            foreach (range(1, 3) as $page) {
+                $response = Http::get('https://api.gumroad.com/v2/sales', [
+                    'access_token' => $this->accessToken,
+                    'product_id' => $product->gumroad_id,
+                    'page' => $page,
+                ]);
+
+                $salesByProduct = [
+                    ...$salesByProduct,
+                    ...$response->json('sales'),
+                ];
+
+                if (!$response->json('next_page_url')) {
+                    break;
+                }
+            }
+
+            $dtos = collect($salesByProduct)
                 ->map(fn (array $sale) => SaleData::make($sale, $product));
 
             $sales = [

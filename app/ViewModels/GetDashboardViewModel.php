@@ -22,6 +22,11 @@ class GetDashboardViewModel extends ViewModel
         $this->sales = $this->gumroad->sales();
     }
 
+    public function sales(): Collection
+    {
+        return $this->sales->sortByDesc('date');
+    }
+
     public function salesSummary(): SalesSummaryData
     {
         $totalRevenue = $this->totalRevenue();
