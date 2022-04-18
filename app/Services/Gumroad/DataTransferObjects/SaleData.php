@@ -24,7 +24,7 @@ class SaleData
             full_name: Arr::get($data, 'full_name'),
             price: $data['price'] / 100,
             date: Carbon::parse($data['created_at']),
-            product: new ProductData($product->title),
+            product: ProductData::fromModel($product),
         );
     }
 }

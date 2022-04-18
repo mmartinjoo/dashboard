@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\Gumroad\GumroadService;
+use App\ViewModels\GetDashboardViewModel;
 
 class GetDashboardController extends Controller
 {
-    public function __invoke()
+    public function __invoke(GumroadService $gumroad)
     {
-        return view('dashboard');
+        return view('dashboard', [
+            'model' => (new GetDashboardViewModel($gumroad))->toArray(),
+        ]);
     }
 }

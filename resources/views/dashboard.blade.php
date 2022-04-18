@@ -41,15 +41,19 @@
                 <div class="flex justify-around bg-indigo-700 text-white py-8">
                     <div>
                         <span class="text-indigo-300 text-xl uppercase mb-1.5">Units sold</span>
-                        <div class="text-4xl text-center mt-2.5">303</div>
+                        <div class="text-4xl text-center mt-2.5">{{ $model['sales_summary']->units_sold }}</div>
                     </div>
                     <div>
                         <span class="text-indigo-300 text-xl uppercase mb-1.5">Total Revenue</span>
-                        <div class="text-4xl text-center mt-2.5">$17,307</div>
+                        <div class="text-4xl text-center mt-2.5">
+                            ${{ number_format($model['sales_summary']->total_revenue, 0, ',') }}
+                        </div>
                     </div>
                     <div>
                         <span class="text-indigo-300 text-xl uppercase mb-1.5">Avg Price</span>
-                        <div class="text-4xl text-center mt-2.5">$57.7</div>
+                        <div class="text-4xl text-center mt-2.5">
+                            ${{ number_format($model['sales_summary']->average_price, 1) }}
+                        </div>
                     </div>
                 </div>
                 <div class="flex justify-around text-white py-8">
