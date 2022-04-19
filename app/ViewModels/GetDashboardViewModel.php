@@ -6,8 +6,8 @@ use App\DataTransferObject\ProductData;
 use App\DataTransferObject\ProductSaleSummaryData;
 use App\DataTransferObject\SalesSummaryData;
 use App\Models\Product;
+use App\Models\Sale;
 use App\Services\Gumroad\DataTransferObjects\SaleData;
-use App\Services\Gumroad\GumroadService;
 use Illuminate\Support\Collection;
 
 class GetDashboardViewModel extends ViewModel
@@ -17,14 +17,14 @@ class GetDashboardViewModel extends ViewModel
      */
     private Collection $sales;
 
-    public function __construct(private readonly GumroadService $gumroad)
+    public function __construct()
     {
-        $this->sales = $this->gumroad->sales();
+        $this->sales = Sale::latest('sold_at')->get();
     }
 
     public function sales(): Collection
     {
-        return $this->sales->sortByDesc('date');
+        return $this->sales;
     }
 
     public function salesSummary(): SalesSummaryData
@@ -46,8 +46,8 @@ class GetDashboardViewModel extends ViewModel
         $totalRevenue = $this->totalRevenue();
 
         return Product::all()->map(function (Product $product) use ($totalRevenue) {
-            $sales = $this->sales->filter(fn (SaleData $data) =>
-                $data->product->gumroad_id === $product->gumroad_id
+            $sales = $this->sales->filter(fn (Sale $sale) =>
+                $sale->gumroad_id === $product->gumroad_id
             );
 
             $productRevenue = $sales->sum('price');
