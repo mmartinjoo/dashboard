@@ -4,6 +4,7 @@ namespace App\Services\Gumroad;
 
 use App\Models\Product;
 use App\Services\Gumroad\DataTransferObjects\SaleData;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
@@ -16,7 +17,7 @@ class GumroadService
     /**
      * @return Collection<SaleData>
      */
-    public function sales(): Collection
+    public function sales(?Carbon $after = null): Collection
     {
         $sales = [];
 
@@ -24,11 +25,17 @@ class GumroadService
             $salesByProduct = [];
 
             foreach (range(1, 3) as $page) {
-                $response = Http::get('https://api.gumroad.com/v2/sales', [
+                $requestData = [
                     'access_token' => $this->accessToken,
                     'product_id' => $product->gumroad_id,
-                    'page' => $page,
-                ]);
+                    'page' => $page
+                ];
+
+                if ($after) {
+                    $requestData['after'] = $after->format('Y-m-d');
+                }
+
+                $response = Http::get('https://api.gumroad.com/v2/sales', $requestData);
 
                 $salesByProduct = [
                     ...$salesByProduct,
@@ -50,5 +57,14 @@ class GumroadService
         }
 
         return collect($sales);
+    }
+
+    public function products(): Collection
+    {
+        $products = Http::get('https://api.gumroad.com/v2/products', [
+            'access_token' => $this->accessToken,
+        ])->json('products');
+
+        return collect($products);
     }
 }
