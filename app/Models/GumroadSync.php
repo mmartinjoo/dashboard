@@ -9,6 +9,8 @@ class GumroadSync extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'synced_at',
     ];

@@ -56,7 +56,7 @@ class GumroadService
             ];
         }
 
-        return collect($sales);
+        return collect($sales)->sortByDesc('date');
     }
 
     public function products(): Collection
