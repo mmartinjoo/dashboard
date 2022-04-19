@@ -94,10 +94,10 @@
                             'bg-zinc-100' => $loop->even,
                         ])>
                             <td class="py-4 pl-6 text-left">
-                                <span>{{ $sale->email }}</span>
-                                <span class="block text-black opacity-50">{{ $sale->full_name }}</span>
+                                <span>{{ $sale->customer_email }}</span>
+                                <span class="block text-black opacity-50">{{ $sale->customer_name }}</span>
                             </td>
-                            <td class="py-4 text-center">{{ $sale->date->format('M. d, Y') }}</td>
+                            <td class="py-4 text-center">{{ $sale->sold_at->format('M. d, Y') }}</td>
                             <td class="py-4 text-center">
                                 <span @class([
                                     'inline-flex' => true,

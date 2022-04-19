@@ -4,27 +4,39 @@ namespace App\ViewModels;
 
 use App\DataTransferObject\ProductData;
 use App\DataTransferObject\ProductSaleSummaryData;
+use App\DataTransferObject\SaleData;
 use App\DataTransferObject\SalesSummaryData;
 use App\Models\Product;
 use App\Models\Sale;
-use App\Services\Gumroad\DataTransferObjects\SaleData;
 use Illuminate\Support\Collection;
 
 class GetDashboardViewModel extends ViewModel
 {
     /**
-     * @var Collection<SaleData>
+     * @var Collection<Sale>
      */
     private Collection $sales;
 
+    /**
+     * @var Collection<Product>
+     */
+    private Collection $products;
+
     public function __construct()
     {
-        $this->sales = Sale::latest('sold_at')->get();
+        $this->products = Product::whereIn('title', ['Basic', 'Plus', 'Premium'])->get();
+
+        $this->sales = Sale::latest('sold_at')
+            ->whereIn('product_id', $this->products->pluck('id'))
+            ->get();
     }
 
+    /**
+     * @return Collection<SaleData>
+     */
     public function sales(): Collection
     {
-        return $this->sales;
+        return $this->sales->map(fn (Sale $sale) => SaleData::fromModel($sale));
     }
 
     public function salesSummary(): SalesSummaryData
@@ -45,17 +57,13 @@ class GetDashboardViewModel extends ViewModel
     {
         $totalRevenue = $this->totalRevenue();
 
-        return Product::all()->map(function (Product $product) use ($totalRevenue) {
-            $sales = $this->sales->filter(fn (Sale $sale) =>
-                $sale->gumroad_id === $product->gumroad_id
-            );
-
-            $productRevenue = $sales->sum('price');
+        return $this->products->map(function (Product $product) use ($totalRevenue) {
+            $productRevenue = $product->sales->sum('price');
 
             return new ProductSaleSummaryData(
                 product: ProductData::fromModel($product),
                 total_revenue: $productRevenue,
-                units_sold: $sales->count(),
+                units_sold: $product->sales->count(),
                 total_revenue_contribution: $productRevenue / $totalRevenue,
             );
         });
