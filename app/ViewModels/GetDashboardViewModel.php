@@ -36,7 +36,7 @@ class GetDashboardViewModel extends ViewModel
      */
     public function sales(): Collection
     {
-        return $this->sales->map(fn (Sale $sale) => SaleData::fromModel($sale));
+        return $this->sales->take(10)->map(fn (Sale $sale) => SaleData::fromModel($sale));
     }
 
     public function salesSummary(): SalesSummaryData

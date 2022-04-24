@@ -24,7 +24,7 @@ class GumroadService
         foreach (Product::all() as $product) {
             $salesByProduct = [];
 
-            foreach (range(1, 3) as $page) {
+            foreach (range(1, 50) as $page) {
                 $requestData = [
                     'access_token' => $this->accessToken,
                     'product_id' => $product->gumroad_id,
