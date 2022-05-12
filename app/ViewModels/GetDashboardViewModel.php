@@ -17,15 +17,8 @@ class GetDashboardViewModel extends ViewModel
      */
     private Collection $sales;
 
-    /**
-     * @var Collection<Product>
-     */
-    private Collection $products;
-
-    public function __construct()
+    public function __construct(private readonly Collection $products)
     {
-        $this->products = Product::whereIn('title', ['Basic', 'Plus', 'Premium'])->get();
-
         $this->sales = Sale::latest('sold_at')
             ->whereIn('product_id', $this->products->pluck('id'))
             ->get();
