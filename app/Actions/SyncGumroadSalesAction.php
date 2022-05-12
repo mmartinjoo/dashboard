@@ -36,7 +36,7 @@ class SyncGumroadSalesAction
                     'product_id' => $product->id,
                     'customer_email' => $sale->email,
                     'customer_name' => $sale->full_name,
-                    'price' => $sale->price,
+                    'revenue' => $sale->revenue,
                     'sold_at' => $sale->date,
                 ]
             );

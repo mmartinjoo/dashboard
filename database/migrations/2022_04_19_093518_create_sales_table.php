@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignIdFor(Product::class)->constrained();
             $table->string('customer_email');
             $table->string('customer_name')->nullable();
-            $table->float('price');
+            $table->float('revenue');
             $table->dateTime('sold_at');
             $table->timestamps();
         });

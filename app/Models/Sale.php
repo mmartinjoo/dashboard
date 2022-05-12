@@ -16,7 +16,7 @@ class Sale extends Model
         'product_id',
         'customer_email',
         'customer_name',
-        'price',
+        'revenue',
         'sold_at',
     ];
 

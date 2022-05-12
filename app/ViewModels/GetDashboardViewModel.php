@@ -51,7 +51,7 @@ class GetDashboardViewModel extends ViewModel
         $totalRevenue = $this->totalRevenue();
 
         return $this->products->map(function (Product $product) use ($totalRevenue) {
-            $productRevenue = $product->sales->sum('price');
+            $productRevenue = $product->sales->sum('revenue');
 
             return new ProductSaleSummaryData(
                 product: ProductData::fromModel($product),
@@ -64,6 +64,6 @@ class GetDashboardViewModel extends ViewModel
 
     private function totalRevenue(): float
     {
-        return $this->sales->sum('price');
+        return $this->sales->sum('revenue');
     }
 }

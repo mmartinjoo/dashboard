@@ -109,17 +109,11 @@
                                     'text-sm' => true,
                                     'leading-none' => true,
                                     'rounded-full' => true,
-                                    'text-lime-900' => $sale->product->title === 'Premium',
-                                    'bg-lime-200' => $sale->product->title === 'Premium',
-                                    'text-yellow-900' => $sale->product->title === 'Plus',
-                                    'bg-yellow-200' => $sale->product->title === 'Plus',
-                                    'text-gray-900' => $sale->product->title === 'Basic',
-                                    'bg-gray-200' => $sale->product->title === 'Basic',
-                                ]) class="">
+                                ])>
                                     {{ $sale->product->title }}
                                 </span>
                             </td>
-                            <td class="py-4 text-center">${{ $sale->price }}</td>
+                            <td class="py-4 text-center">${{ $sale->revenue }}</td>
                         </tr>
                         @endforeach
                     </tbody>
