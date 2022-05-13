@@ -27,5 +27,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GumroadService::class)
             ->needs('$accessToken')
             ->give(config('services.gumroad.access_token'));
+
+        $this->app->when(GumroadService::class)
+            ->needs('$uri')
+            ->give(config('services.gumroad.uri'));
     }
 }

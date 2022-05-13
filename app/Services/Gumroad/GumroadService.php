@@ -3,6 +3,7 @@
 namespace App\Services\Gumroad;
 
 use App\Models\Product;
+use App\Services\Gumroad\DataTransferObjects\ProductData;
 use App\Services\Gumroad\DataTransferObjects\SaleData;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -10,21 +11,24 @@ use Illuminate\Support\Facades\Http;
 
 class GumroadService
 {
-    public function __construct(private readonly string $accessToken)
-    {
-    }
+    public function __construct(
+        private readonly string $accessToken,
+        private readonly string $uri,
+    ) {}
 
     /**
+     * @param Collection<Product> $products
+     * @param Carbon|null $after
      * @return Collection<SaleData>
      */
-    public function sales(?Carbon $after = null): Collection
+    public function sales(Collection $products, ?Carbon $after = null): Collection
     {
         $sales = [];
 
-        foreach (Product::all() as $product) {
+        foreach ($products as $product) {
             $salesByProduct = [];
 
-            foreach (range(1, 50) as $page) {
+            for ($page = 1; ; $page++) {
                 $requestData = [
                     'access_token' => $this->accessToken,
                     'product_id' => $product->gumroad_id,
@@ -35,7 +39,7 @@ class GumroadService
                     $requestData['after'] = $after->format('Y-m-d');
                 }
 
-                $response = Http::get('https://api.gumroad.com/v2/sales', $requestData);
+                $response = Http::get("{$this->uri}/sales", $requestData);
 
                 $salesByProduct = [
                     ...$salesByProduct,
@@ -59,12 +63,15 @@ class GumroadService
         return collect($sales)->sortByDesc('date');
     }
 
+    /**
+     * @return Collection<ProductData>
+     */
     public function products(): Collection
     {
-        $products = Http::get('https://api.gumroad.com/v2/products', [
+        $products = Http::get("{$this->uri}/products", [
             'access_token' => $this->accessToken,
         ])->json('products');
 
-        return collect($products);
+        return collect($products)->map(fn (array $data) => ProductData::fromArray($data));
     }
 }

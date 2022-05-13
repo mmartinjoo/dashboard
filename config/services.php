@@ -15,6 +15,7 @@ return [
     */
 
     'gumroad' => [
+        'uri' => env('GUMROAD_URI'),
         'access_token' => env('GUMROAD_ACCESS_TOKEN'),
     ],
 

@@ -21,7 +21,10 @@ class SyncGumroadSalesAction
 
         $latestSync = GumroadSync::latest('synced_at')->first();
 
-        $sales = $this->gumroad->sales($latestSync?->synced_at);
+        $sales = $this->gumroad->sales(
+            Product::all(),
+            $latestSync?->synced_at,
+        );
 
         foreach ($sales as $sale) {
             /** @var SaleData $sale */
