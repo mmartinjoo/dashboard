@@ -26,37 +26,9 @@ class GumroadService
         $sales = [];
 
         foreach ($products as $product) {
-            $salesByProduct = [];
-
-            for ($page = 1; ; $page++) {
-                $requestData = [
-                    'access_token' => $this->accessToken,
-                    'product_id' => $product->gumroad_id,
-                    'page' => $page
-                ];
-
-                if ($after) {
-                    $requestData['after'] = $after->format('Y-m-d');
-                }
-
-                $response = Http::get("{$this->uri}/sales", $requestData);
-
-                $salesByProduct = [
-                    ...$salesByProduct,
-                    ...$response->json('sales'),
-                ];
-
-                if (!$response->json('next_page_url')) {
-                    break;
-                }
-            }
-
-            $dtos = collect($salesByProduct)
-                ->map(fn (array $sale) => SaleData::make($sale, $product));
-
             $sales = [
                 ...$sales,
-                ...$dtos,
+                ...$this->salesByProduct($product, $after),
             ];
         }
 
@@ -73,5 +45,41 @@ class GumroadService
         ])->json('products');
 
         return collect($products)->map(fn (array $data) => ProductData::fromArray($data));
+    }
+
+    /**
+     * @param Product $product
+     * @param Carbon|null $after
+     * @return Collection<SaleData>
+     */
+    private function salesByProduct(Product $product, ?Carbon $after): Collection
+    {
+        $sales = [];
+
+        for ($page = 1; ; $page++) {
+            $requestData = [
+                'access_token' => $this->accessToken,
+                'product_id' => $product->gumroad_id,
+                'page' => $page
+            ];
+
+            if ($after) {
+                $requestData['after'] = $after->format('Y-m-d');
+            }
+
+            $response = Http::get("{$this->uri}/sales", $requestData);
+
+            $sales = [
+                ...$sales,
+                ...$response->json('sales'),
+            ];
+
+            if (!$response->json('next_page_url')) {
+                break;
+            }
+        }
+
+        return collect($sales)
+            ->map(fn (array $sale) => SaleData::make($sale, $product));
     }
 }

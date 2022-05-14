@@ -36,10 +36,12 @@ class GetDashboardViewModel extends ViewModel
     {
         $totalRevenue = $this->totalRevenue();
 
+        $unitsSold = $this->sales->count();
+
         return new SalesSummaryData(
-            units_sold: $this->sales->count(),
+            units_sold: $unitsSold,
             total_revenue: round($totalRevenue, 0),
-            average_price: round($totalRevenue / $this->sales->count(), 1),
+            average_price: round($totalRevenue / $unitsSold, 1),
         );
     }
 
